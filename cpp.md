@@ -132,6 +132,20 @@ ref ++;
 // ref = 6
 ```
 
+Here is an other use of the `&`:
+
+```c++
+int var = 0;
+funct(var);
+// a is still 0
+funct(&var)
+// a is now1
+
+void funct(int var) {
+    ++ var;
+}
+```
+
 In the first call of `funct`, a **copy** of `var` will be passed. So it's an other variable that will be updated, and not `var` itself. However, in the second call of `funct`, `a` is not copied, it is passed as **reference**. This reference will be updated, and as effect, `var` will also get updated. It is actually the exact same thing as:
 
 ```c++
