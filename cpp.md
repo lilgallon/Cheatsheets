@@ -1,4 +1,11 @@
-**work in progress**
+*work in progress*
+- [1. Things to know](#1-things-to-know)
+- [2. Common mistakes](#2-common-mistakes)
+- [2. Linker and compiler](#2-linker-and-compiler)
+- [3. Pre-processed statements](#3-pre-processed-statements)
+- [4. Declarations & definitions](#4-declarations--definitions)
+- [5. Debugging](#5-debugging)
+- [6. Pointers & references](#6-pointers--references)
 
 ## 1. Things to know
 *or that you should not forget*
