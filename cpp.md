@@ -107,9 +107,9 @@ Let's see all of that in action
 ```c++
 // This instruction creates a pointer called ptr. ptr is an hexadecimal number representing an address (ex: 0x1234 for x32).
 // As you can see, ptr is an address, it is not equal to 5. So by using int*, you make a promise that this address points at an integer. This will then be used when deferencing to read and write what's contained at this address.
-int* ptr = 5;
+int* ptr = new int(5);
 
-// So you can do that. It will change the address to 4, which is wrong
+// So you can do that. It will change the address to 4, which is wrong (can not convert from 'int' to 'int *')
 // ptr = 4;
 
 // If you want to update the variable, you need to dereference the pointer first
@@ -117,6 +117,8 @@ int* ptr = 5;
 
 // This will print the address where the address pointing to the integer is located
 std::cout << std::hex << &ptr << std::endl;
+
+delete ptr;
 
 // If you understand that completly, you know that you can do a lot of weird stuff by manipulating addresses and types
 ```
@@ -132,7 +134,7 @@ ref ++;
 // ref = 6
 ```
 
-Here is an other use of the `&`:
+Here is an other use of `&`:
 
 ```c++
 void funct(int var) {
