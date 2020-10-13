@@ -14,9 +14,10 @@
 	- [4. Basic pointers, references and smart pointers](#4-basic-pointers-references-and-smart-pointers)
 		- [4.1 Basic pointers & References](#41-basic-pointers--references)
 	- [4.2 Smart pointers](#42-smart-pointers)
+	- [4.3 Buffers](#43-buffers)
 	- [5. Oriented object programming (OOP)](#5-oriented-object-programming-oop)
-		- [5.x Vocabulary](#5x-vocabulary)
-		- [5.x Visibility](#5x-visibility)
+		- [5.1 Vocabulary](#51-vocabulary)
+		- [5.2 Visibility](#52-visibility)
 		- [5.x Friend](#5x-friend)
 		- [5.x Constructors](#5x-constructors)
 		- [5.x Polymorphism](#5x-polymorphism)
@@ -36,12 +37,13 @@
 		- [8.2 Mutable](#82-mutable)
 		- [8.3 New](#83-new)
 		- [8.4 This](#84-this)
-		- [8.3 Static](#83-static)
+		- [8.5 Extern](#85-extern)
+		- [8.6 Static](#86-static)
 	- [9 Operators](#9-operators)
 		- [9.1 Arrow operator](#91-arrow-operator)
 	- [10. Templates](#10-templates)
 	- [11. Operator overloading](#11-operator-overloading)
-	- [N. Sources](#n-sources)
+	- [N. References](#n-references)
 
 ## 1. Introduction
 
@@ -92,6 +94,8 @@ int Main(){
 ```
 
 The difference between `#include <...>` and `#include "..."` is that when you use `<>` it will search for the file in the include path while `""` will look for the file in the include path as well as relatively to the current file.
+
+> #include <*.h> // c standard lib
 
 - `#pragma once:` It means “only include this file once”. It prevents having duplicate declarations. Here is what you probably already saw. It has the exact same effect:
 
@@ -221,17 +225,56 @@ std::unique_ptr<Car> car = std::make_unique<Car>(); // exception safe
 std::unique_ptr<Car> car (new Car()); // works, but not recommended
 ```
 
+**shared_ptr**: there's a counter, and when it reaches 0, it gets deleted. Can obviously be copied. That counter counts the number of references.
+
+```cpp
+std::shared_ptr<Car> car = std::make_shared<Car>(); // exception safe
+```
+
+**weak_ptr**: must be used with a shared_ptr. It makes a copy of it without increasing the counter. It means that you don't take ownership of it (so it can be destroyed when you're using it). It is useful for some specific cases.
+
+```cpp
+std::weak_ptr<Car> weakCar = car; // car is a shared_ptr
+```
+
+## 4.3 Buffers
+
+```cpp
+// Asks for 8 bytes of memory (because 1 char is 1 byte)
+char* buffer = new char[8];
+// Fills the memory from the address pointed by buffer to this address + 8 bytes with A's
+memset(buffer, 'A', 8);
+
+// Prints "A" and not "AAAAAAAA"
+std::cout << *buffer << std::endl;
+
+// Why? Because it is a char*, and when printing it, it will read only 1 byte at the
+// address pointed by buffer. Only 1 byte because a char is 1 byte!
+
+// Here is a little trick to show the entiere buffer
+for (unsigned int i = 0; i < 8; i++)
+	std::cout << *(buffer+1);
+std::cout << std::endl;
+
+// You probably won't do that in the future, but rather
+const char* str = "Hello";
+std::cout << str << std::endl;
+
+// Don't forget to free the buffer (allocated on the heap)
+delete[] buffer;
+```
+
 ## 5. Oriented object programming (OOP)
 
 *We won't go over everything here. We will only speak about the basic concepts of OOP (for example we will speak of the behavior of the `const` keyword in the const part of this cheat sheet so that we have everything in one place).*
 
-### 5.x Vocabulary
+### 5.1 Vocabulary
 
 - **Functions** are also called **methods**
 - **Variables** of class are called **class attributes**
 - An **instance** of a **class** is an **object** (and an object is an instance)
 
-### 5.x Visibility
+### 5.2 Visibility
 
 - `private`: only current class and friends can access it
 - `protected`: only current class and children classes can access it
@@ -377,17 +420,30 @@ The new keyword is detailed in [Instantiating objects](about:blank#63-new-keywor
 
 > todo
 
-### 8.3 Static
+### 8.5 Extern
 
-It's like declaring a variable private in a class but with translation units (⇒ the variable/function will only be visible in the file where it has been declared). 
+The `extern` keyword is used to retrieve a global function/variable that is in another translation unit.
 
-It needs to be used as much as possible if the variable/function is not global, otherwise it can be used anywhere and can lead to bad bugs (for example if there is another global variable with the same name).
+```cpp
+// other.cpp (any file that needs to use that global variable)
+extern int global;
+
+// main.cpp (needs to be only one file, you can't init a variable more than once)
+#include "other.cpp"
+int global = 5;
+```
+
+### 8.6 Static
+
+It's like declaring a variable private in a class but with translation units (⇒ the variable/function will only be visible in the file where it has been declared).
+
+> It needs to be used as much as possible if the variable/function is not global, otherwise it can be used anywhere and can lead to bad bugs (for example if there is another global variable with the same name).
 
 You may think about the `extern` keyword to retrieve a static variable/function in another translation unit, but you can't. That's why it's "private".
 
 ```jsx
 // file1.cpp
-static int 
+static int
 ```
 
 When static is used in a scope, then the lifetime of the targeted variable/function changes.
@@ -436,7 +492,8 @@ Static is also used in classes, but we saw that in part 5.4.
 
 > todo
 
-## N. Sources
+## N. References
 
--  [http://www.cplusplus.com/](http://www.cplusplus.com/)
--  [The Cherno on Youtube](https://www.youtube.com/channel/UCQ-W1KE9EYfdxhL6S4twUNw)
+- [http://www.cplusplus.com/](http://www.cplusplus.com/)
+- [The Cherno on Youtube](https://www.youtube.com/channel/UCQ-W1KE9EYfdxhL6S4twUNw)
+- [cpp reference](https://en.cppreference.com/)
