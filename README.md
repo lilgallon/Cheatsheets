@@ -1,4 +1,7 @@
 # Cheatsheets
-Some cheatsheets that I use regularly and keep updating over time
 
-- [C++](cpp.md)
+- [C++](cpp.md) (wip)
+
+Future:
+- Java (coming once that the C++ cheatsheet is done)
+- JS
