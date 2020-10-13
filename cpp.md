@@ -15,10 +15,11 @@
 		- [4.1 Basic pointers & References](#41-basic-pointers--references)
 	- [4.2 Smart pointers](#42-smart-pointers)
 	- [5. Oriented object programming (OOP)](#5-oriented-object-programming-oop)
-		- [5.1 Visibility](#51-visibility)
-		- [5.2 Friend](#52-friend)
-		- [5.3 Polymorphism](#53-polymorphism)
-		- [5.4 Static members](#54-static-members)
+		- [5.x Vocabulary](#5x-vocabulary)
+		- [5.x Visibility](#5x-visibility)
+		- [5.x Friend](#5x-friend)
+		- [5.x Constructors](#5x-constructors)
+		- [5.x Polymorphism](#5x-polymorphism)
 	- [6. Instantiating objects](#6-instantiating-objects)
 		- [6.1 Initializer lists](#61-initializer-lists)
 		- [6.2 How to properly instantiate objects](#62-how-to-properly-instantiate-objects)
@@ -211,28 +212,92 @@ It is just **syntax sugar**.
 
 ## 4.2 Smart pointers
 
-> todo
+Smart pointers free themselves automatically.
+
+**unique_ptr**: it's a scoped pointer. When the execution goes out of the pointer's scope, it gets destroyed. It's also not possible to copy it.
+
+```cpp
+std::unique_ptr<Car> car = std::make_unique<Car>(); // exception safe
+std::unique_ptr<Car> car (new Car()); // works, but not recommended
+```
 
 ## 5. Oriented object programming (OOP)
 
-### 5.1 Visibility
+*We won't go over everything here. We will only speak about the basic concepts of OOP (for example we will speak of the behavior of the `const` keyword in the const part of this cheat sheet so that we have everything in one place).*
+
+### 5.x Vocabulary
+
+- **Functions** are also called **methods**
+- **Variables** of class are called **class attributes**
+- An **instance** of a **class** is an **object** (and an object is an instance)
+
+### 5.x Visibility
 
 - `private`: only current class and friends can access it
 - `protected`: only current class and children classes can access it
 - `public`: anything can access it
 - nothing: default visibility is private
 
-### 5.2 Friend
+### 5.x Friend
+
+> todo (should it be in part 1?)
+
+### 5.x Constructors
 
 > todo
 
-### 5.3 Polymorphism
+### 5.x Polymorphism
+
+From Wikipedia, *"In programming languages and type theory, polymorphism is the provision of a single interface to entities of different types or the use of a single symbol to represent multiple different types."*. We won't go in depth here, because that's not the point of this cheat sheet, but we use Polymorphism when a class inherits from a given class. It will need to override some functions (or not), and modify some functions (or not) and so on. We will see how we can do that programmatically here.
+
+**Virtual functions** allow us to override them in subclasses (≥ C++11: you should use the keyword `override`, it's not required although it prevents bugs).
+
+```cpp
+class Car
+{
+public:
+	virtual void Vroom() { std::cout << "mumum" << std::endl; }
+	virtual void Open() { std::cout << "bip bip" << std::endl; }
+};
+
+class Mustang : public Car
+{
+public:
+	void Vroom() override { std::cout << "RRRRRR" << std::endl; }
+};
+
+int main(char* args, int argc)
+{
+	Car car;
+	Mustang mustang;
+	Car* probablyMustang = new Mustang();
+
+	car.Vroom(); // prints mumum
+	mustang.Vroom(); // prints RRRRR
+	probablyMustang->Vroom(); // prints RRRR since probablyMustang is an instance of Mustang
+
+	// prints bip bip: it takes the first function that matches the call in the inheritance tree
+	mustang.Open();
+
+	delete probablyMustang;
+	return EXIT_SUCCESS;
+}
+```
+
+**Pure virtual functions** define a class as abstract. Because if these functions are not implemented in the inheriting classes, they can't be instantiated.
+
+```cpp
+// If this function is in the Car class
+virtual int GetGasType() = 0; // pure virtual function
+// Then, the car class can't be instantiated.
+// If the Mustang class that inherits from the Car class implements that function
+int GetGasType() override { return GAS::PREMIUM; }
+// Then, it can be instantiated
+```
+
+> size of classes, effect of inheriting and so on
 
 > todo: Different types of functions (pure virtual, virtual, …)
-
-### 5.4 Static members
-
-> to
 
 ## 6. Instantiating objects
 
@@ -272,7 +337,27 @@ It is just **syntax sugar**.
 
 ### 7.3 Enums
 
-> todo
+It's a way to give names to values. By default, the names will be mapped to integers (0, 1, ...). But those values can be changed.
+
+```cpp
+enum Color { RED, GREEN, BLUE };
+```
+
+Their type can also be changed.
+
+```cpp
+enum Direction { LEFT = 'l', RIGHT = 'r' };
+enum Direction : char { LEFT = 'l', RIGHT = 'r' }; // since c++ 11
+```
+
+They can be used in two different ways:
+
+```cpp
+Direction dir1 = Direction::LEFT; // dir1 must be a Direction
+char dir2 = Direction::LEFT; // dir2 just has to be a character
+```
+
+They are usually used to prevent using *magic number*s*.*
 
 ## 8. Keywords
 
@@ -296,7 +381,7 @@ The new keyword is detailed in [Instantiating objects](about:blank#63-new-keywor
 
 It's like declaring a variable private in a class but with translation units (⇒ the variable/function will only be visible in the file where it has been declared). 
 
-> It needs to be used as much as possible if the variable/function is not global, otherwise it can be used anywhere and can lead to bad bugs (for example if there is another global variable with the same name).
+It needs to be used as much as possible if the variable/function is not global, otherwise it can be used anywhere and can lead to bad bugs (for example if there is another global variable with the same name).
 
 You may think about the `extern` keyword to retrieve a static variable/function in another translation unit, but you can't. That's why it's "private".
 
@@ -334,6 +419,8 @@ void Foo()
 The thing is that it is not possible to modify or access `i` outside the function.
 
 Static is also used in classes, but we saw that in part 5.4.
+
+> TODO: speak about static in classes
 
 ## 9 Operators
 
