@@ -380,6 +380,7 @@ An array is a pointer to a block of memory. Let's see an example:
 
 ```cpp
 // arr is an integer pointer to a block of memory containing 8 integers
+// arr is allocated on the stack (it will get destroyed at the end of the current block)
 int arr[7] = { 1, 2, 3, 5, 8, 13, 21 };
 
 // If you want to get, let's say the element at the index 2, then, you will use
@@ -408,7 +409,17 @@ arr[4] = 33;
 
 > If you modify an array outside of its bounds, it will modify some data in the memory that does not belong to you. And, while in debug mode it will show the error, in release mod it may not show it!
 
-Now let's see how to use arrays properly in C++.
+There is an other way to create arrays:
+
+```cpp
+// This one is allocated on the heap
+int* arr = new int[7] { 1, 2, 3, 5, 8, 13, 21 }
+
+// So you need to delete it once that you won't need it
+delete[] array;
+```
+
+Now let's see how to properly use arrays in C++.
 
 > todo
 
