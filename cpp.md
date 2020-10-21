@@ -143,7 +143,7 @@ std::string GetAbsoluteFilePath(std::string filename){
 
 ## 3. Debugging
 
-> todo
+> todo how to debug
 
 ## 4. Basic pointers, references and smart pointers
 
@@ -373,6 +373,44 @@ int GetGasType() override { return GAS::PREMIUM; }
 ### 7.1 Arrays
 
 > todo (“basic arrays” , dynamic arrays, where they’re good and bad at. How to chose the array to use?) - also how to PROPERLY use std::vector
+
+**Base**:
+
+An array is a pointer to a block of memory. Let's see an example:
+
+```cpp
+// arr is an integer pointer to a block of memory containing 8 integers
+int arr[7] = { 1, 2, 3, 5, 8, 13, 21 };
+
+// If you want to get, let's say the element at the index 2, then, you will use
+int elem = arr[4];
+```
+
+In the backstage, it will do that
+
+```cpp
+int sameElem = *((int*)(arr) + 4);
+```
+
+-  `(int*) (arr)`: casts arr to a pointer to an integer, because that's what it is
+- `(int*) (arr) + 4`: that's what we call "pointer arithmetics" 4 will be scaled according to the type of the pointer. So in that case, it's an int pointer so 4 will
+represent `sizeof(int)*4 = 4*4 = 16`
+- `*((int*)(arr) + 4)`: gets the content of that address
+
+We specified that sameElem is an int, so it will read `sizeof(int) = 4 bytes` from `address_of_arr + 16`. You can also write by doing so:
+
+```cpp
+arr[4] = 33;
+
+// same thing as
+*((int*)(arr)+4) = 33;
+```
+
+> If you modify an array outside of its bounds, it will modify some data in the memory that does not belong to you. And, while in debug mode it will show the error, in release mod it may not show it!
+
+Now let's see how to use arrays properly in C++.
+
+> todo
 
 ### 7.2 Strings
 
