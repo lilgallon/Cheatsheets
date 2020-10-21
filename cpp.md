@@ -539,7 +539,25 @@ They are usually used to prevent using *magic number*s*.*
 
 ### 8.1 Const
 
-> todo (how should we use it, advantages, …)
+Can't modify the *content* of that pointer. The const keyword is applied on `int`:
+```cpp
+const int* addr1;
+```
+
+Can't modify the *address* of that pointer: The const keyword is applied on `*`:
+```cpp
+int* const addr2;
+```
+
+Can't modify either the *content* or the *address*. The const keywords are applied to `int` and `*`:
+```cpp
+const int* const addr3;
+```
+
+(Only works in classes and structs). Can't modify the class attributes in this function HOWEVER, we can update the attributes if they're marked as mutable (see part 8.2):
+```cpp
+int GetX() const { return x; }
+```
 
 ### 8.2 Mutable
 
