@@ -637,7 +637,40 @@ Static is also used in classes, but we saw that in part 5.4.
 
 ## 10. Templates
 
-> todo (purpose, how does it work, …)
+Templates are used to generate code dynamically.
+
+```cpp
+template<typename T>
+void println(T value)
+{
+    std::cout << value << std::endl;
+}
+```
+
+You can use `class` instead of `typename`, it does the exact same thing. The general convention is to use `class` when `T` is expected to always be a class, and `typename` otherwise (if other types may be expected).
+
+Here, `println` doesn't exist. It will be created when `println` will be called according to the type given. So if you don't call `println` it won't ever be compiled. In the above example, the function will be compiled this way:
+```cpp
+void println(int value) { std::cout << value << std::endl; }
+```
+
+If that function already exists, then it won't generate a new one, and it will call the one that already exists.
+
+As you probably know, you can't initialize an array with a variable length. But with templates you can, because the code will be generated dynamically.
+
+```cpp
+template <int N>
+class Array {
+private:
+    int array[N];
+public:
+    int Length() { return N; }
+};
+
+// main..
+Array<5> arr;
+println(arr.GetSize());
+```
 
 ## 11. Operator overloading
 
