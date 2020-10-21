@@ -31,6 +31,9 @@
 	- [7. Types](#7-types)
 		- [7.1 Arrays](#71-arrays)
 		- [7.2 Strings](#72-strings)
+			- [7.2.1 char*](#721-char)
+			- [7.2.2 std::string](#722-stdstring)
+			- [7.2.3 string literals](#723-string-literals)
 		- [7.3 Enums](#73-enums)
 	- [8. Keywords](#8-keywords)
 		- [8.1 Const](#81-const)
@@ -146,6 +149,8 @@ std::string GetAbsoluteFilePath(std::string filename){
 > todo how to debug
 
 ## 4. Basic pointers, references and smart pointers
+
+> TODO: some info about const ref arguments
 
 ### 4.1 Basic pointers & References
 
@@ -425,7 +430,86 @@ Now let's see how to properly use arrays in C++.
 
 ### 7.2 Strings
 
-> todo (a lot of stuff to say here): char*, std::string, string literals, …
+#### 7.2.1 char*
+
+```cpp
+// all of these initializations are made on the stack
+
+const char* str1 = "something";
+char str2[4] = {'s', 'o', 'm', 'e'};
+char str3[5] = { 's', 'o', 'm', 'e', '\0' };
+
+std::cout << str1 << std::endl;
+std::cout << str2 << std::endl;
+std::cout << str3 << std::endl;
+```
+
+We use a terminaison character (\0 or 0) to know when a string ends
+- str1 prints "something" properly since the terminaison char is added in the backstage
+- str2 prints weird characters at the end (it tries to print the random numbers that are in the memory)
+- str3 prints "some" properly since there is the terminaison character (\0 or 0)
+
+> char use 1 byte and are encoded in ASCII
+
+> `char*` (without the const keyword before) is depreciated since C++11 because strings intialized that way should not
+> be modified. Otherwise it would mean to dynamically re-allocate memory. There are better ways to do that.
+
+#### 7.2.2 std::string
+
+`std::string` is basically an array of `char` with some helpers (functions).
+
+> \<iostream\> has the declaration of string, but \<string\> is needed because the \<\< with strings is not in \<iostream\> for example.
+
+The following code won't work because `"some"` is a `const char[]`.
+
+```cpp
+std::string str1 = "some" + "thing";
+```
+
+However, you can do that:
+
+```cpp
+std::string str1 = "some";
+str1 += "thing";
+```
+
+Because it's adding an `std::string` to an `std::string`, and not a `const char[]` to a `const char[]`. The `+` operator also works, so you can do that as well:
+
+```cpp
+std::string str1 = std::string("some") + "thing";
+```
+
+Here is an example of some helper functions:
+
+```cpp
+// find returns the position where the string was found
+// npos is a static member constant value which evaluates at the
+// maximum value for size_t (end of a string in brief)
+bool contains = str1.find("thing") != std::string::npos;
+```
+
+#### 7.2.3 string literals
+
+```cpp
+#include <string>
+using namespace std::string_literals; // for the "s"
+
+const char*     str1 =   "Something"; // ASCII
+const char*     str2 = u8"Something"; // UTF-8
+const wchar_t*  str3 =  L"Something"; // depends
+const char16_t* str4 =  u"Something"; // UTF-16
+const char32_t* str5 =  U"Something"; // UTF-32
+
+std::string    str6 =  "Some"s +  "thing";
+std::wstring   str7 = L"Some"s + L"thing";
+std::u16string str8 = u"Some"s + u"thing";
+std::u32string str9 = U"Some"s + U"thing";
+
+// Ignores escape character
+const char* multiline = R"(line1
+line2
+line3)";
+```
 
 ### 7.3 Enums
 
